@@ -1,8 +1,15 @@
 # Metarman
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/metarman`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem helps you to get weather of airport.
 
-TODO: Delete this and the text above, and describe your gem
+## Introduction
+What's METAR??  
+> METAR is a format for reporting weather information. A METAR weather report is predominantly used by pilots in fulfillment of a part of a pre-flight weather briefing, and by meteorologists, who use aggregated METAR information to assist in weather forecasting.
+> (Wikipedia: https://en.wikipedia.org/wiki/METAR)
+
+What's source of airport information??
+> OpenFlights: https://openflights.org/  
+> Thank you for great data sets!!!
 
 ## Installation
 
@@ -22,7 +29,30 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+#### Get METAR
+```ruby
+require 'Metarman'
+Metarman.get_raw("RJFF") #=> RJFF is ICAO code. NOT IATA code.
+#=> {
+ # :time=>"2019/06/07 08:00",
+ # :metar_raw=>"RJFF 070800Z 19015G26KT 9999 FEW020 SCT030 BKN040 25/18 Q1001 NOSIG RMK 1CU020 4CU030 6CU040 A2957"
+ # }
+```
+
+#### Get METAR, Airport Information and Human-readable weather
+```ruby
+require 'Metarman'
+Metarman.get_with_info("RJFF") #=> RJFF is ICAO code. NOT IATA code.
+#=> {     
+ # :time=>"2019/06/07 08:00", 
+ # :metar_raw=>"RJFF 070800Z 19015G26KT 9999 FEW020 SCT030 BKN040 25/18 Q1001 NOSIG RMK 1CU020 4CU030 6CU040 A2957", 
+ # :airport=>{"id"=>"2305", "name"=>"Fukuoka Airport", "icao"=>"RJFF", "iata"=>"FUK", "country"=>"Japan", "city_name"=>"Fukuoka", "lat"=>"33.585899353027344", "lon"=>"130.4510040283203", "elev"=>"32", "utc"=>"9", "dst"=>"U", "timezone"=>"Asia/Tokyo"}, 
+ # :weather=>{:visibility=>"9999", :few=>"020", :sct=>"030", :bkn=>"040", :qnh=>"1001"}
+ # }
+```
+
+#### NOTE
+This METAR-parser ignore after "QNH".
 
 ## Development
 
@@ -32,7 +62,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/metarman.
+Bug reports and pull requests are welcome on GitHub at https://github.com/moririn772/metarman.
 
 ## License
 
