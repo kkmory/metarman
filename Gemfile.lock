@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    metarman (0.1.0)
+    metarman (0.0.1)
 
 GEM
   remote: https://rubygems.org/
