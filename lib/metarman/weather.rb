@@ -1,11 +1,10 @@
-require 'metarman/data'
 require 'net/https'
 
 module Metarman
   class Weather
     def initialize(icao)
       @icao = icao.upcase
-      @result = {time: nil, airport: nil, metar_raw: nil, weather: nil}
+      @result = {}
     end
 
     def get
@@ -21,16 +20,19 @@ module Metarman
       @result[:metar_raw] = res[1]
     end
 
+    # This returns time and metar only.
     def get_raw
       self.get
       @result
     end
 
+    # This returns time, metar, airport information and human-readable weather information.
     def get_with_info
       self.get
       ap = Data.new(@icao).get
+      parser = MetarParser.new(@result[:metar_raw])
       @result[:airport] = ap
-      @result[:weather] = "parsed_metar" #WIP
+      @result[:weather] = parser.execute
       @result
     end
   end
