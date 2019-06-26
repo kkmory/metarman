@@ -8,16 +8,29 @@ module Metarman
     end
 
     def get
-      uri = URI.parse("https://tgftp.nws.noaa.gov/data/observations/metar/stations/#{@icao}.TXT")
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      begin
+        raise GettingMetarError.throw(1002) if @icao.length != 4
 
-      req = Net::HTTP::Get.new(uri.request_uri)
-      res = http.request(req).body.chomp.split("\n")
+        uri = URI.parse("https://tgftp.nws.noaa.gov/data/observations/metar/stations/#{@icao}.TXT")
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-      @result[:time] = res[0]
-      @result[:metar_raw] = res[1]
+        req = Net::HTTP::Get.new(uri.request_uri)
+        res = http.request(req)
+
+        # Check NOAA API returns correct data
+        case res.code
+        when "200"
+          info = res.body.chomp.split("\n")
+          @result[:time] = info[0]
+          @result[:metar_raw] = info[1]
+        else
+          raise GettingMetarError.throw(1001)
+        end
+      rescue => e
+        puts e.message
+      end
     end
 
     # This returns time and metar only.
